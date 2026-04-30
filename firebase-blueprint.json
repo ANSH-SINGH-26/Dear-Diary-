@@ -1,0 +1,48 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with streak and basic info",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "streak": { "type": "number" },
+        "lastEntryDate": { "type": "string" }
+      },
+      "required": ["uid", "email", "streak"]
+    },
+    "DiaryEntry": {
+      "title": "DiaryEntry",
+      "description": "A diary entry with mood analysis and AI response",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "content": { "type": "string" },
+        "mood": { "type": "string", "enum": ["happy", "sad", "anxious", "angry", "neutral"] },
+        "moodIntensity": { "type": "number" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "suggestedTag": { "type": "string" },
+        "aiResponse": { "type": "string" },
+        "moodColor": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "createdAt": { "type": "object" },
+        "updatedAt": { "type": "object" }
+      },
+      "required": ["content", "userId", "mood", "createdAt"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Root user profile"
+    },
+    "users/{userId}/entries/{entryId}": {
+      "schema": "DiaryEntry",
+      "description": "User's diary entries"
+    }
+  }
+}
