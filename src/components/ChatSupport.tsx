@@ -166,22 +166,22 @@ export default function ChatSupport({ onClose, initialMessage }: ChatSupportProp
       <div className="p-4 bg-white border-t border-beige-100">
         <form 
           onSubmit={(e) => { e.preventDefault(); handleSend(); }}
-          className="relative"
+          className="flex items-center gap-2 bg-beige-50 p-1 rounded-full border border-transparent focus-within:ring-2 focus-within:ring-amber-500/20 transition-all"
         >
           <input 
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type your message..."
-            className="w-full pl-6 pr-14 py-4 bg-beige-50 border-none rounded-full text-sm focus:ring-2 focus:ring-amber-500/20 transition-all placeholder:text-ink/20"
+            className="flex-grow pl-5 py-2.5 bg-transparent border-none text-sm focus:ring-0 placeholder:text-ink/20 min-w-0"
             disabled={isLoading}
           />
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="absolute right-2 top-2 p-2 bg-ink text-beige-50 rounded-full hover:bg-ink/90 disabled:opacity-50 transition-all"
+            className="shrink-0 w-10 h-10 bg-ink text-beige-50 rounded-full hover:bg-ink/90 disabled:opacity-50 transition-all flex items-center justify-center shadow-md"
           >
-            <Send size={18} />
+            <Send size={16} />
           </button>
         </form>
       </div>
