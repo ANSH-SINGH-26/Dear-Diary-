@@ -86,32 +86,32 @@ export default function Sidebar({ activeTab, setActiveTab, onNewEntry, onLogout,
       </div>
 
       {/* Mobile Bottom Nav */}
-      <div className="sm:hidden fixed bottom-6 left-4 right-4 h-16 bg-white/90 backdrop-blur-md shadow-2xl rounded-3xl border border-beige-200 z-50 flex items-center justify-around px-2">
+      <div className="sm:hidden fixed bottom-6 left-4 right-4 h-16 bg-white/95 backdrop-blur-md shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-3xl border border-beige-200 z-50 flex items-center justify-around px-2 py-1">
         {menuItems.slice(0, 2).map((item) => (
           <button
             key={item.id}
             onClick={() => setActiveTab(item.id as any)}
             className={cn(
-              "flex flex-col items-center justify-center gap-1 p-2 py-3 rounded-2xl transition-all relative",
-              activeTab === item.id ? "text-ink" : "text-ink/30"
+              "flex flex-col items-center justify-center gap-1 w-14 h-14 rounded-2xl transition-all relative shrink-0",
+              activeTab === item.id ? "text-ink bg-beige-100/50" : "text-ink/30"
             )}
           >
             {activeTab === item.id && (
               <motion.div 
-                layoutId="activeTab"
-                className="absolute inset-0 bg-beige-100 rounded-2xl -z-10"
+                layoutId="activeTabMobile"
+                className="absolute inset-0 bg-ink/5 rounded-2xl -z-10"
               />
             )}
             <item.icon size={20} />
-            <span className="text-[10px] font-bold uppercase tracking-tighter">{item.label.split(' ')[0]}</span>
+            <span className="text-[9px] font-bold uppercase tracking-wider">{item.label.split(' ')[0]}</span>
           </button>
         ))}
 
         <button
           onClick={onNewEntry}
-          className="flex flex-col items-center justify-center gap-1 p-3 bg-ink text-beige-50 rounded-2xl shadow-xl -translate-y-6 scale-110 border-4 border-beige-50"
+          className="flex items-center justify-center w-14 h-14 bg-ink text-beige-50 rounded-2xl shadow-xl -translate-y-7 scale-110 border-4 border-white active:scale-100 transition-transform shrink-0"
         >
-          <PlusCircle size={24} />
+          <PlusCircle size={28} />
         </button>
 
         {menuItems.slice(2).map((item) => (
@@ -119,18 +119,18 @@ export default function Sidebar({ activeTab, setActiveTab, onNewEntry, onLogout,
             key={item.id}
             onClick={() => setActiveTab(item.id as any)}
             className={cn(
-              "flex flex-col items-center justify-center gap-1 p-2 py-3 rounded-2xl transition-all relative",
-              activeTab === item.id ? "text-ink" : "text-ink/30"
+              "flex flex-col items-center justify-center gap-1 w-14 h-14 rounded-2xl transition-all relative shrink-0",
+              activeTab === item.id ? "text-ink bg-beige-100/50" : "text-ink/30"
             )}
           >
             {activeTab === item.id && (
               <motion.div 
-                layoutId="activeTab"
-                className="absolute inset-0 bg-beige-100 rounded-2xl -z-10"
+                layoutId="activeTabMobile"
+                className="absolute inset-0 bg-ink/5 rounded-2xl -z-10"
               />
             )}
             <item.icon size={20} />
-            <span className="text-[10px] font-bold uppercase tracking-tighter">{item.label.split(' ')[0]}</span>
+            <span className="text-[9px] font-bold uppercase tracking-wider">{item.label.split(' ')[0]}</span>
           </button>
         ))}
       </div>
