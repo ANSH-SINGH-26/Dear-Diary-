@@ -147,22 +147,22 @@ export default function ChatTabContent() {
       <div className="pt-4 border-t border-beige-100">
         <form 
           onSubmit={(e) => { e.preventDefault(); handleSend(); }}
-          className="relative"
+          className="flex items-center gap-2 bg-beige-50 p-1.5 rounded-full border border-transparent focus-within:ring-4 focus-within:ring-amber-500/10 transition-all"
         >
           <input 
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Share what's on your heart..."
-            className="w-full pl-8 pr-16 py-5 bg-beige-50 border-none rounded-full text-base focus:ring-4 focus:ring-amber-500/10 transition-all placeholder:text-ink/20 font-serif italic"
+            className="flex-grow pl-5 py-3 bg-transparent border-none text-base focus:ring-0 placeholder:text-ink/20 font-serif italic min-w-0"
             disabled={isLoading}
           />
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="absolute right-3 top-3 bottom-3 px-6 bg-ink text-beige-50 rounded-full hover:bg-ink/90 disabled:opacity-50 transition-all flex items-center justify-center"
+            className="shrink-0 w-12 h-12 bg-ink text-beige-50 rounded-full hover:bg-ink/90 disabled:opacity-50 transition-all flex items-center justify-center shadow-lg"
           >
-            <Send size={20} />
+            <Send size={18} />
           </button>
         </form>
       </div>
