@@ -3,7 +3,7 @@ import path from "path";
 import dotenv from "dotenv";
 import { GoogleGenAI } from "@google/genai";
 
-dotenv.config({ override: true });
+dotenv.config();
 
 const app = express();
 app.use(express.json());
@@ -68,7 +68,7 @@ Behavior:
 - Keep responses concise (3-5 sentences) but life-affirming.`;
 
     const chat = ai.chats.create({
-      model: "gemini-1.5-flash",
+      model: "gemini-3.5-flash",
       config: {
         systemInstruction: mode === 'psychologist' ? psychologistInstruction : normalInstruction
       },
@@ -125,7 +125,7 @@ Format your response as valid JSON:
 }`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-3.5-flash",
       contents: prompt,
       config: {
         systemInstruction: systemPrompt,
@@ -168,7 +168,7 @@ RULES:
 - Just the prompt.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-3.5-flash",
       contents: prompt,
       config: {
         systemInstruction: "You are an empathetic journaling assistant specialized in gratitude anchoring and cognitive reframing. You help users navigate their emotions through thoughtful, non-judgmental inquiry.",
@@ -203,7 +203,7 @@ RULES:
 - Format as a natural paragraph without bullet points or headers.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-3.5-flash",
       contents: prompt,
       config: {
         systemInstruction: "You are a calming, professional mental wellness guide.",
