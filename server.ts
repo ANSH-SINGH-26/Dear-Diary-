@@ -68,7 +68,7 @@ Behavior:
 - Keep responses concise (3-5 sentences) but life-affirming.`;
 
     const chat = ai.chats.create({
-      model: "gemini-3-flash-preview",
+      model: "gemini-1.5-flash",
       config: {
         systemInstruction: mode === 'psychologist' ? psychologistInstruction : normalInstruction
       },
@@ -81,6 +81,9 @@ Behavior:
     console.error("Chat error:", error);
     if (error.message === "API_KEY_MISSING") {
       return res.status(500).json({ error: "Please configure your Gemini API Key in the Secrets panel." });
+    }
+    if (error?.status === 429 || error?.message?.includes("429") || error?.message?.includes("RESOURCE_EXHAUSTED") || error?.message?.includes("quota")) {
+      return res.status(500).json({ error: "The AI is resting right now. We've reached our temporary capability limit (API quota exhausted). Please try again in an hour." });
     }
     res.status(500).json({ error: error.message || "Failed to compile response" });
   }
@@ -122,7 +125,7 @@ Format your response as valid JSON:
 }`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-1.5-flash",
       contents: prompt,
       config: {
         systemInstruction: systemPrompt,
@@ -136,6 +139,9 @@ Format your response as valid JSON:
     console.error("Analyze error:", error);
     if (error.message === "API_KEY_MISSING") {
       return res.status(500).json({ error: "Please configure your Gemini API Key in the Secrets panel." });
+    }
+    if (error?.status === 429 || error?.message?.includes("429") || error?.message?.includes("RESOURCE_EXHAUSTED") || error?.message?.includes("quota")) {
+      return res.status(500).json({ error: "The AI is resting right now. We've reached our temporary capability limit (API quota exhausted). Please try again in an hour." });
     }
     res.status(500).json({ error: error.message });
   }
@@ -162,7 +168,7 @@ RULES:
 - Just the prompt.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-1.5-flash",
       contents: prompt,
       config: {
         systemInstruction: "You are an empathetic journaling assistant specialized in gratitude anchoring and cognitive reframing. You help users navigate their emotions through thoughtful, non-judgmental inquiry.",
@@ -174,6 +180,9 @@ RULES:
     console.error("Prompt error:", error);
     if (error.message === "API_KEY_MISSING") {
       return res.status(500).json({ error: "Please configure your Gemini API Key in the Secrets panel." });
+    }
+    if (error?.status === 429 || error?.message?.includes("429") || error?.message?.includes("RESOURCE_EXHAUSTED") || error?.message?.includes("quota")) {
+      return res.status(500).json({ error: "The AI is resting right now. We've reached our temporary capability limit (API quota exhausted). Please try again in an hour." });
     }
     res.status(500).json({ error: error.message });
   }
@@ -194,7 +203,7 @@ RULES:
 - Format as a natural paragraph without bullet points or headers.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-1.5-flash",
       contents: prompt,
       config: {
         systemInstruction: "You are a calming, professional mental wellness guide.",
@@ -206,6 +215,9 @@ RULES:
     console.error("Stress error:", error);
     if (error.message === "API_KEY_MISSING") {
       return res.status(500).json({ error: "Please configure your Gemini API Key in the Secrets panel." });
+    }
+    if (error?.status === 429 || error?.message?.includes("429") || error?.message?.includes("RESOURCE_EXHAUSTED") || error?.message?.includes("quota")) {
+      return res.status(500).json({ error: "The AI is resting right now. We've reached our temporary capability limit (API quota exhausted). Please try again in an hour." });
     }
     res.status(500).json({ error: error.message });
   }
