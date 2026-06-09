@@ -85,52 +85,37 @@ export default function Sidebar({ activeTab, setActiveTab, onNewEntry, onLogout,
         </button>
       </div>
 
-      {/* Mobile Bottom Nav */}
-      <div className="sm:hidden fixed bottom-6 left-4 right-4 h-16 bg-white/95 backdrop-blur-md shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-3xl border border-beige-200 z-50 flex items-center justify-around px-2 py-1">
-        {menuItems.slice(0, 2).map((item) => (
+      {/* Mobile Floating Action Button */}
+      {activeTab === 'entries' && (
+        <div className="sm:hidden fixed bottom-[6.5rem] right-6 z-50">
           <button
-            key={item.id}
-            onClick={() => setActiveTab(item.id as any)}
-            className={cn(
-              "flex flex-col items-center justify-center gap-1 w-14 h-14 rounded-2xl transition-all relative shrink-0",
-              activeTab === item.id ? "text-ink bg-beige-100/50" : "text-ink/30"
-            )}
+            onClick={onNewEntry}
+            className="flex items-center justify-center w-[3.5rem] h-[3.5rem] bg-ink/90 backdrop-blur-sm text-beige-50 rounded-full shadow-lg hover:bg-ink active:scale-95 transition-all outline outline-4 outline-white/40 group"
           >
-            {activeTab === item.id && (
-              <motion.div 
-                layoutId="activeTabMobile"
-                className="absolute inset-0 bg-ink/5 rounded-2xl -z-10"
-              />
-            )}
-            <item.icon size={20} />
-            <span className="text-[9px] font-bold uppercase tracking-wider">{item.label.split(' ')[0]}</span>
+            <PlusCircle size={28} className="group-hover:rotate-90 transition-transform" />
           </button>
-        ))}
+        </div>
+      )}
 
-        <button
-          onClick={onNewEntry}
-          className="flex items-center justify-center w-14 h-14 bg-ink text-beige-50 rounded-2xl shadow-xl -translate-y-7 scale-110 border-4 border-white active:scale-100 transition-transform shrink-0"
-        >
-          <PlusCircle size={28} />
-        </button>
-
-        {menuItems.slice(2).map((item) => (
+      {/* Mobile Bottom Nav */}
+      <div className="sm:hidden fixed bottom-6 left-4 right-4 h-[4.5rem] bg-white/95 backdrop-blur-md shadow-[0_10px_40px_rgba(0,0,0,0.1)] rounded-[2rem] border border-beige-200 z-50 flex items-center justify-between px-1 py-1">
+        {menuItems.map((item) => (
           <button
             key={item.id}
             onClick={() => setActiveTab(item.id as any)}
             className={cn(
-              "flex flex-col items-center justify-center gap-1 w-14 h-14 rounded-2xl transition-all relative shrink-0",
-              activeTab === item.id ? "text-ink bg-beige-100/50" : "text-ink/30"
+              "flex flex-col items-center justify-center gap-1 flex-1 h-full rounded-[1.5rem] transition-all relative shrink-0",
+              activeTab === item.id ? "text-ink" : "text-ink/40 hover:text-ink/70"
             )}
           >
             {activeTab === item.id && (
               <motion.div 
                 layoutId="activeTabMobile"
-                className="absolute inset-0 bg-ink/5 rounded-2xl -z-10"
+                className="absolute inset-1 bg-beige-100/60 rounded-[1.25rem] -z-10"
               />
             )}
-            <item.icon size={20} />
-            <span className="text-[9px] font-bold uppercase tracking-wider">{item.label.split(' ')[0]}</span>
+            <item.icon size={20} className={cn("transition-transform", activeTab === item.id && "scale-110")} />
+            <span className="text-[9px] font-bold uppercase tracking-widest truncate w-full text-center px-1">{item.label.split(' ')[0]}</span>
           </button>
         ))}
       </div>
