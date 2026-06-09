@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, ArrowRight, Loader2, Heart, Search, MessageCircle, X, LogOut } from 'lucide-react';
+import { Logo } from './components/Logo';
 import Sidebar from './components/Sidebar';
 import Timeline from './components/Timeline';
 import MoodChart from './components/MoodChart';
@@ -8,6 +9,7 @@ import WritingInterface from './components/WritingInterface';
 import EntryCard from './components/EntryCard';
 import ChatSupport from './components/ChatSupport';
 import ChatTabContent from './components/ChatTabContent';
+import StressTabContent from './components/StressTabContent';
 import { DiaryEntry } from './types';
 import { cn, handleFirestoreError, OperationType, formatDate } from './lib/utils';
 import { auth, signInWithGoogle, db } from './lib/firebase';
@@ -65,7 +67,8 @@ export default function App() {
   const [user, setUser] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [activeTab, setActiveTab] = useState<'entries' | 'chat' | 'timeline' | 'stats'>('entries');
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'entries' | 'chat' | 'timeline' | 'stats' | 'stress'>('entries');
   const [isWriting, setIsWriting] = useState(false);
   const [entries, setEntries] = useState<DiaryEntry[]>([]);
   const [selectedEntry, setSelectedEntry] = useState<DiaryEntry | null>(null);
@@ -150,7 +153,7 @@ export default function App() {
     return () => unsubscribeEntries();
   }, [user]);
 
-  const handleTabChange = (tab: 'entries' | 'chat' | 'timeline' | 'stats') => {
+  const handleTabChange = (tab: 'entries' | 'chat' | 'timeline' | 'stats' | 'stress') => {
     setActiveTab(tab);
     setIsWriting(false);
     setSelectedEntry(null);
@@ -159,10 +162,12 @@ export default function App() {
   const handleLogin = async () => {
     if (isLoggingIn) return;
     setIsLoggingIn(true);
+    setLoginError(null);
     try {
       await signInWithGoogle();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login failed", error);
+      setLoginError(error?.message || "Login failed. Please check if popups are blocked.");
     } finally {
       setIsLoggingIn(false);
     }
@@ -212,6 +217,7 @@ export default function App() {
 
   const getGreeting = () => {
     const hour = new Date().getHours();
+    if (hour < 5 || hour >= 22) return "Good Night";
     if (hour < 12) return "Good Morning";
     if (hour < 18) return "Good Afternoon";
     return "Good Evening";
@@ -331,7 +337,9 @@ export default function App() {
           className="max-w-md w-full bg-white p-8 sm:p-12 rounded-[2rem] sm:rounded-[3rem] shadow-2xl text-center space-y-6 sm:space-y-8"
         >
           <div className="flex justify-center">
-            <div className="w-20 h-20 rounded-3xl bg-ink text-beige-50 flex items-center justify-center font-bold text-3xl shadow-xl">D</div>
+            <div className="hover:scale-105 transition-transform duration-500">
+              <Logo size={100} className="drop-shadow-2xl" />
+            </div>
           </div>
           <div>
             <h1 className="text-4xl font-serif text-ink mb-3">Dear Diary</h1>
@@ -353,6 +361,15 @@ export default function App() {
               </>
             )}
           </button>
+
+          {loginError && (
+            <div className="p-4 bg-red-50 text-red-600 text-xs rounded-xl border border-red-100 animate-in fade-in slide-in-from-top-1">
+              {loginError}
+              <div className="mt-2 font-bold opacity-70 underline cursor-pointer" onClick={() => window.location.reload()}>
+                Try Refreshing
+              </div>
+            </div>
+          )}
           <p className="text-xs text-ink/40 font-medium uppercase tracking-widest pt-4">
             Encrypted & Secure &sdot; AI-Powered Empathy
           </p>
@@ -452,11 +469,12 @@ export default function App() {
                     )}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {filteredEntries.slice(0, 6).map((entry) => (
+                      {filteredEntries.slice(0, 6).map((entry, index) => (
                         <EntryCard 
                           key={entry.id} 
                           entry={entry} 
                           onClick={() => setSelectedEntry(entry)} 
+                          index={index}
                         />
                       ))}
                       {entries.length > 0 && filteredEntries.length === 0 && (
@@ -555,6 +573,10 @@ export default function App() {
                     <ChatTabContent />
                   </div>
                 </div>
+              )}
+
+              {activeTab === 'stress' && (
+                <StressTabContent entries={entries} />
               )}
 
               {activeTab === 'timeline' && (

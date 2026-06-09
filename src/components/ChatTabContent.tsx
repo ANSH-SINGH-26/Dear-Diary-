@@ -20,6 +20,7 @@ export default function ChatTabContent() {
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [mode, setMode] = useState<'normal' | 'psychologist'>('normal');
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -49,7 +50,7 @@ export default function ChatTabContent() {
           parts: [{ text: m.text }]
         }));
 
-      const response = await talkToAI(userMsg, history);
+      const response = await talkToAI(userMsg, history, mode);
       setMessages(prev => [...prev, { role: 'model', text: response, timestamp: new Date() }]);
     } catch (error) {
       setMessages(prev => [...prev, { 
@@ -64,14 +65,30 @@ export default function ChatTabContent() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
         <div>
-          <h2 className="text-2xl font-serif">Dear Heart</h2>
-          <p className="text-sm text-ink/40 italic">"Your story matters. I'm here to listen."</p>
+          <h2 className="text-2xl font-serif">{mode === 'psychologist' ? 'Dr. Heart' : 'Dear Heart'}</h2>
+          <p className="text-sm text-ink/40 italic">{mode === 'psychologist' ? '"Your psychological wellness guide."' : '"Your story matters. I\'m here to listen."'}</p>
         </div>
-        <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-amber-50 rounded-full border border-amber-100">
-          <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" />
-          <span className="text-[10px] uppercase font-bold tracking-widest text-amber-700">Live Support</span>
+        <div className="flex items-center gap-4">
+          <div className="flex bg-beige-100 p-1 rounded-xl">
+            <button 
+              onClick={() => setMode('normal')}
+              className={cn("px-4 text-xs font-bold uppercase tracking-wider py-1.5 rounded-lg transition-colors", mode === 'normal' ? "bg-white text-ink shadow-sm" : "text-ink/40 hover:text-ink/60")}
+            >
+              Friend
+            </button>
+            <button 
+              onClick={() => setMode('psychologist')}
+              className={cn("px-4 text-xs font-bold uppercase tracking-wider py-1.5 rounded-lg transition-colors", mode === 'psychologist' ? "bg-white text-ink shadow-sm" : "text-ink/40 hover:text-ink/60")}
+            >
+              Psychologist
+            </button>
+          </div>
+          <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-amber-50 rounded-full border border-amber-100">
+            <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" />
+            <span className="text-[10px] uppercase font-bold tracking-widest text-amber-700">Live Support</span>
+          </div>
         </div>
       </div>
 

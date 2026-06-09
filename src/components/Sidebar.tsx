@@ -1,11 +1,12 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Book, Calendar, BarChart2, LogOut, PlusCircle, MessageCircle } from 'lucide-react';
+import { Book, Calendar, BarChart2, LogOut, PlusCircle, MessageCircle, HeartPulse } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { Logo } from './Logo';
 
 interface SidebarProps {
-  activeTab: 'entries' | 'chat' | 'timeline' | 'stats';
-  setActiveTab: (tab: 'entries' | 'chat' | 'timeline' | 'stats') => void;
+  activeTab: 'entries' | 'chat' | 'timeline' | 'stats' | 'stress';
+  setActiveTab: (tab: 'entries' | 'chat' | 'timeline' | 'stats' | 'stress') => void;
   onNewEntry: () => void;
   onLogout: () => void;
   userEmail?: string | null;
@@ -17,6 +18,7 @@ export default function Sidebar({ activeTab, setActiveTab, onNewEntry, onLogout,
     { id: 'chat', label: 'Dear Heart', icon: MessageCircle },
     { id: 'timeline', label: 'Timeline', icon: Calendar },
     { id: 'stats', label: 'Mood Trends', icon: BarChart2 },
+    { id: 'stress', label: 'Stress Relief', icon: HeartPulse },
   ];
 
   return (
@@ -24,9 +26,7 @@ export default function Sidebar({ activeTab, setActiveTab, onNewEntry, onLogout,
       {/* Desktop Sidebar */}
       <div className="hidden sm:flex fixed left-0 top-0 h-full w-20 lg:w-64 bg-white border-r border-beige-200 flex-col items-center lg:items-stretch p-4 lg:p-6 z-40">
         <div className="flex items-center gap-3 mb-10 px-2 leading-none">
-          <div className="w-10 h-10 rounded-2xl bg-ink text-beige-50 flex items-center justify-center font-bold text-xl shadow-sm">
-            D
-          </div>
+          <Logo size={44} className="drop-shadow-sm flex-shrink-0" />
           <h1 className="text-xl font-bold tracking-tight hidden lg:block">Dear Diary</h1>
         </div>
 
@@ -74,8 +74,8 @@ export default function Sidebar({ activeTab, setActiveTab, onNewEntry, onLogout,
       {/* Mobile Top Header (New) */}
       <div className="sm:hidden fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-md flex items-center justify-between px-6 z-50 border-b border-beige-100">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-ink text-beige-50 flex items-center justify-center font-bold text-lg shadow-sm">D</div>
-          <span className="font-serif italic font-medium">Dear Diary</span>
+          <Logo size={36} className="drop-shadow-sm flex-shrink-0" />
+          <span className="font-serif italic font-medium ml-1">Dear Diary</span>
         </div>
         <button 
           onClick={onLogout}

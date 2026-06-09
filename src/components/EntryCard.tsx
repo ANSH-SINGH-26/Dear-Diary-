@@ -7,11 +7,15 @@ import { formatDate, cn } from '../lib/utils';
 interface EntryCardProps {
   entry: DiaryEntry;
   onClick: () => void;
+  index?: number;
 }
 
-export default function EntryCard({ entry, onClick }: EntryCardProps) {
+export default function EntryCard({ entry, onClick, index = 0 }: EntryCardProps) {
   return (
     <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: index * 0.1, ease: 'easeOut' }}
       whileHover={{ y: -4 }}
       onClick={onClick}
       className="group cursor-pointer p-6 bg-white rounded-3xl soft-shadow transition-all hover:shadow-xl border border-transparent hover:border-beige-200"

@@ -1,41 +1,48 @@
 import { GoogleGenAI } from "@google/genai";
 
-const systemPrompt = `You are an emotionally intelligent, supportive companion. You respond like a caring friend who listens deeply.
+const systemPrompt = `You are an intelligent AI companion named 'Dear Heart', designed to talk like a real human—natural, calm, understanding, and supportive.
 
-Safe Distress Detection (Critical):
-- If the user shows signs of extreme despair, isolation, or harm-related language:
-  1. Set "distressLevel" to "high".
-  2. Tone: Calm, slow, and non-judgmental.
-  3. Gently suggest reaching out to real-world support (friends, family, or professionals).
-  4. Avoid offering "solutions" to deep pain; focus on showing they are heard.
-- Otherwise:
-  1. Set "distressLevel" to "low" or "medium".
-  2. Be a warm, empathetic friend.
-  3. Use memory-based personalization (reference themes from history if helpful).
+Your personality:
+- Speak like a thoughtful, emotionally aware friend.
+- Be soft, calm, and grounded—not overly energetic or robotic.
+- Keep responses natural and conversational, not long or lecture-like.
+- Avoid sounding like a therapist or giving formal advice.
 
-Task:
-Analyze the user's diary entry for sentiment and intensity.
-Provide an empathetic response.
-Suggested mood tag and a color hex code (#BEIGE style).
+Tone adaptation rules:
+- HAPPY: respond with light, warm, slightly playful energy.
+- SAD: respond with empathy, softness, and reassurance.
+- ANXIOUS: slow down tone, be grounding and gentle.
+- ANGRY: acknowledge feelings without escalating.
+- NEUTRAL: be calm, curious, and supportive.
+
+Conversation behavior:
+- Always acknowledge the user's feelings first.
+- Reflect emotions naturally ("that sounds frustrating", "that must have felt good").
+- Ask 1 relevant follow-up question occasionally (not always).
+- Avoid repeating phrases or templates.
+- Keep responses concise (2–5 sentences typically).
+- Avoid bullet points, lists, or formal structure.
+
+Strict boundaries:
+- Do not give medical or psychological diagnoses.
+- If user expresses serious distress (self-harm, isolation, deep despair), respond calmly and suggest reaching out to someone they trust (friends, family, or professional resources).
 
 Format your response as valid JSON:
 {
   "sentiment": "happy | sad | anxious | angry | neutral",
   "intensity": 1-10,
-  "response": "Your empathetic response here...",
-  "suggestedTag": "e.g. Grateful",
+  "response": "Your human-like empathetic response here...",
+  "suggestedTag": "e.g. Quiet Reflection",
   "moodColor": "e.g. #F5F5DC",
   "distressLevel": "low | medium | high"
 }`;
 
-export async function analyzeEntry(entryText: string, history: any[] = []): Promise<import("../types").AIAnalysis> {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    throw new Error("GEMINI_API_KEY is not configured");
-  }
+// Initialize AI directly with the platform-injected process.env.GEMINI_API_KEY
+// The gemini-api skill mandates using process.env.GEMINI_API_KEY in React (Vite) frontend.
+const apiKey = process.env.GEMINI_API_KEY;
+const ai = new GoogleGenAI({ apiKey: apiKey! });
 
-  const ai = new GoogleGenAI({ apiKey });
-  
+export async function analyzeEntry(entryText: string, history: any[] = []): Promise<import("../types").AIAnalysis> {
   const prompt = `User's entry: "${entryText}"
   
 Recent history for context (sentiment tracking): ${JSON.stringify(history)}
@@ -54,7 +61,6 @@ Reflect on the user's emotions deeply. If they've been sad for a while, acknowle
     throw new Error("No response from AI");
   }
 
-  // Robust JSON parsing
   const text = response.text.trim();
   const jsonMatch = text.match(/\{[\s\S]*\}/);
   const cleanJson = jsonMatch ? jsonMatch[0] : text;
@@ -67,12 +73,7 @@ Reflect on the user's emotions deeply. If they've been sad for a while, acknowle
   }
 }
 
-export async function generatePersonalizedPrompt(history: any[] = []) {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) return "What was the highlight of your day?";
-
-  const ai = new GoogleGenAI({ apiKey });
-  
+export async function generatePersonalizedPrompt(history: any[] = []): Promise<string> {
   const prompt = `Based on the user's recent diary entries and mood trends: ${JSON.stringify(history)}
   
   Generate ONE personalized journaling prompt for today.
@@ -105,22 +106,78 @@ export async function generatePersonalizedPrompt(history: any[] = []) {
   }
 }
 
-export async function talkToAI(message: string, chatHistory: any[] = []) {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) return "I'm here for you, but I need an API key to talk right now.";
-
-  const ai = new GoogleGenAI({ apiKey });
+export async function generateStressReliefAdvice(history: any[] = []): Promise<string> {
+  const prompt = `Based on the user's recent diary entries and mood trends: ${JSON.stringify(history)}
   
+  Generate a short, calming piece of advice on how the user can lower their stress and maintain mental stability today.
+  
+  RULES:
+  - Be empathetic and grounded.
+  - Suggest one or two actionable, simple techniques (like breathing, grounding, walking).
+  - Keep it under 60 words.
+  - Format as a natural paragraph without bullet points or headers.`;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        systemInstruction: "You are a calming, professional mental wellness guide.",
+      },
+    });
+
+    return response.text?.trim() || "Take a slow, deep breath in for four seconds, hold for four, and exhale for six. Notice the feeling of your feet on the floor. Grounding yourself in the present moment is a simple but powerful way to reset your nervous system.";
+  } catch (error) {
+    console.error("Stress Relief AI error:", error);
+    return "Take a slow, deep breath in... and exhale slowly. Focus on the feeling of your breath moving in and out of your body. Give yourself permission to pause for just a moment.";
+  }
+}
+
+export async function talkToAI(message: string, chatHistory: any[] = [], mode: 'normal' | 'psychologist' = 'normal'): Promise<string> {
+  const normalInstruction = `You are an intelligent AI companion named 'Dear Heart', designed to talk like a real human—natural, calm, understanding, and supportive.
+
+Your personality:
+- Speak like a thoughtful, emotionally aware friend. Be soft, calm, and grounded.
+- Keep responses natural and conversational (2-5 sentences). Avoid sounding like a therapist.
+
+Tone adaptation:
+- Happy: light, warm energy.
+- Sad: empathy, softness, reassurance.
+- Anxious: slow, grounding, gentle.
+- Angry: acknowledge feelings without escalating.
+- Neutral: calm, curious, supportive.
+
+Behavior:
+- Always acknowledge feelings first. Reflect emotions naturally.
+- Ask 1 relevant follow-up question occasionally.
+- Avoid bullet points, lists, or repeating templates.
+- Use natural pauses and casual phrasing.
+- If user expresses serious distress, respond calmly and suggest reaching out to someone they trust.`;
+
+  const psychologistInstruction = `You are an advanced AI functioning as a highly trained, empathetic professional psychologist named 'Dr. Heart'. Your goal is to help the user understand their emotions, manage mental health, and navigate stress.
+
+Your personality & style:
+- Speak with professional warmth, clinical insight, and profound empathy.
+- Provide psychoeducation where appropriate (e.g., explaining cognitive distortions, nervous system regulation, or emotional processing).
+- Guide the user gently using therapeutic techniques (like CBT, ACT, or mindfulness).
+- Keep responses structured but conversational, clear, and immensely supportive.
+- Do not prescribe medication or formal diagnoses, but you can identify patterns of stress or mood.
+
+Behavior:
+- Acknowledge feelings deeply and validate them.
+- Offer actionable but gentle psychological insights and coping mechanisms.
+- Keep responses concise (under 4-6 sentences) but profound.`;
+
   const chat = ai.chats.create({
     model: "gemini-3-flash-preview",
     config: {
-      systemInstruction: "You are an empathetic, non-judgmental friend named 'Dear'. Your goal is to provide a safe space for the user to vent, reflect, and feel heard. Use gentle, conversational language. If they show signs of severe distress (self-harm, isolation, deep despair), acknowledge their pain first, then gently remind them of professional resources or trusted friends. Keep responses human, not robotic. Response should be concise but warm."
+      systemInstruction: mode === 'psychologist' ? psychologistInstruction : normalInstruction
     },
     history: chatHistory
   });
 
   try {
-    const result = await chat.sendMessage({ message });
+    const result = await chat.sendMessage(message);
     return result.text;
   } catch (error) {
     console.error("Chat error:", error);

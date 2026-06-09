@@ -52,11 +52,12 @@ export default function Timeline({ entries, onSelectEntry }: TimelineProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {groupedEntries[month]
               .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0))
-              .map((entry) => (
+              .map((entry, index) => (
                 <EntryCard 
                   key={entry.id} 
                   entry={entry} 
                   onClick={() => onSelectEntry(entry)} 
+                  index={index}
                 />
               ))}
           </div>

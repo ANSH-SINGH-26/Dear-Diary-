@@ -10,7 +10,7 @@ async function startServer() {
   const PORT = 3000;
 
   app.use(express.json());
-
+  
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

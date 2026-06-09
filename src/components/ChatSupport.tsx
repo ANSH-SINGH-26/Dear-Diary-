@@ -19,6 +19,7 @@ export default function ChatSupport({ onClose, initialMessage }: ChatSupportProp
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [mode, setMode] = useState<'normal' | 'psychologist'>('normal');
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -57,7 +58,7 @@ export default function ChatSupport({ onClose, initialMessage }: ChatSupportProp
           parts: [{ text: m.text }]
         }));
 
-      const response = await talkToAI(userMsg, history);
+      const response = await talkToAI(userMsg, history, mode);
       setMessages(prev => [...prev, { role: 'model', text: response, timestamp: new Date() }]);
     } catch (error) {
       setMessages(prev => [...prev, { 
@@ -78,22 +79,40 @@ export default function ChatSupport({ onClose, initialMessage }: ChatSupportProp
       className="fixed inset-4 sm:inset-auto sm:right-8 sm:bottom-8 sm:w-[400px] h-[600px] max-h-[80vh] bg-white rounded-[2.5rem] shadow-2xl z-[60] flex flex-col overflow-hidden border border-beige-200"
     >
       {/* Header */}
-      <div className="p-6 bg-ink text-beige-50 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-beige-50/10 rounded-xl">
-            <MessageCircle size={20} className="text-amber-400" />
+      <div className="p-6 bg-ink text-beige-50 flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-beige-50/10 rounded-xl">
+              <MessageCircle size={20} className="text-amber-400" />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm leading-tight">{mode === 'psychologist' ? 'Dr. Heart' : 'Dear Heart'}</h3>
+              <p className="text-[10px] text-beige-50/50 uppercase tracking-widest font-bold">{mode === 'psychologist' ? 'Clinical mode' : 'Always Here'}</p>
+            </div>
           </div>
-          <div>
-            <h3 className="font-bold text-sm leading-tight">Dear Heart</h3>
-            <p className="text-[10px] text-beige-50/50 uppercase tracking-widest font-bold">Always Here</p>
-          </div>
+          <button 
+            onClick={onClose}
+            className="p-2 hover:bg-white/10 rounded-full transition-colors"
+          >
+            <X size={20} />
+          </button>
         </div>
-        <button 
-          onClick={onClose}
-          className="p-2 hover:bg-white/10 rounded-full transition-colors"
-        >
-          <X size={20} />
-        </button>
+        
+        {/* Toggle Mode */}
+        <div className="flex bg-beige-50/10 p-1 rounded-xl">
+          <button 
+            onClick={() => setMode('normal')}
+            className={cn("flex-1 text-xs font-bold uppercase tracking-wider py-1.5 rounded-lg transition-colors", mode === 'normal' ? "bg-white text-ink shadow-sm" : "text-beige-50/70 hover:text-white")}
+          >
+            Friend
+          </button>
+          <button 
+            onClick={() => setMode('psychologist')}
+            className={cn("flex-1 text-xs font-bold uppercase tracking-wider py-1.5 rounded-lg transition-colors", mode === 'psychologist' ? "bg-white text-ink shadow-sm" : "text-beige-50/70 hover:text-white")}
+          >
+            Psychologist
+          </button>
+        </div>
       </div>
 
       {/* Messages */}
