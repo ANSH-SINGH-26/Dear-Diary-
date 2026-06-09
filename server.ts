@@ -1,20 +1,12 @@
 import express from "express";
 import path from "path";
-import { createServer as createViteServer } from "vite";
 import dotenv from "dotenv";
+import { GoogleGenAI } from "@google/genai";
 
 dotenv.config({ override: true });
 
 const app = express();
 app.use(express.json());
-
-let GoogleGenAI: any;
-try {
-  const genai = await import("@google/genai");
-  GoogleGenAI = genai.GoogleGenAI;
-} catch (e) {
-  console.error("Failed to load @google/genai", e);
-}
 
 const getAi = () => {
   let apiKey = process.env.GEMINI_API_KEY;
@@ -222,11 +214,16 @@ RULES:
 // Vite middleware for development
 async function startVite() {
   if (process.env.NODE_ENV !== "production") {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
-    });
-    app.use(vite.middlewares);
+    try {
+      const { createServer: createViteServer } = await import("vite");
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: "spa",
+      });
+      app.use(vite.middlewares);
+    } catch (e) {
+      console.warn("Vite not available, skipping dev middleware");
+    }
   } else {
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
