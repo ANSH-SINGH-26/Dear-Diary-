@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Send, Loader2, Bot, User, MessageCircle } from 'lucide-react';
+import { Send, Loader2, Heart, User, MessageCircle } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { talkToAI } from '../services/aiProvider';
 
@@ -110,7 +110,7 @@ export default function ChatTabContent() {
               "w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 shadow-sm transition-transform hover:scale-110",
               msg.role === 'user' ? "bg-amber-100 text-amber-700" : "bg-ink text-beige-50"
             )}>
-              {msg.role === 'user' ? <User size={18} /> : <Bot size={18} />}
+              {msg.role === 'user' ? <User size={18} /> : <Heart size={18} fill="currentColor" />}
             </div>
             <div className="flex flex-col gap-1.5 max-w-[75%]">
               <div className={cn(
@@ -138,7 +138,7 @@ export default function ChatTabContent() {
             className="flex items-start gap-4"
           >
             <div className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 shadow-sm bg-ink text-beige-50">
-              <Bot size={18} />
+              <Heart size={18} fill="currentColor" />
             </div>
             <div className="bg-white border border-beige-100 p-5 rounded-3xl rounded-tl-none shadow-sm flex gap-1 items-center">
               <motion.div 

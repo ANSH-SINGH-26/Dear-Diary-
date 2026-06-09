@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Send, X, Loader2, MessageCircle, User, Bot, Sparkles } from 'lucide-react';
+import { Send, X, Loader2, MessageCircle, User, Heart, Sparkles } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { talkToAI } from '../services/aiProvider';
 
@@ -138,7 +138,7 @@ export default function ChatSupport({ onClose, initialMessage }: ChatSupportProp
                 "w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-sm mt-1",
                 msg.role === 'user' ? "bg-amber-100 text-amber-700" : "bg-ink text-beige-50"
               )}>
-                {msg.role === 'user' ? <User size={12} /> : <Bot size={12} />}
+                {msg.role === 'user' ? <User size={12} /> : <Heart size={12} fill="currentColor" />}
               </div>
               <div className={cn(
                 "max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed",
@@ -165,7 +165,7 @@ export default function ChatSupport({ onClose, initialMessage }: ChatSupportProp
             className="flex items-start gap-2.5 ml-0"
           >
             <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-sm bg-ink text-beige-50">
-              <Bot size={12} />
+              <Heart size={12} fill="currentColor" />
             </div>
             <div className="bg-white border border-beige-200 p-4 rounded-2xl rounded-tl-none shadow-sm flex gap-1 items-center">
               {[0, 0.2, 0.4].map((delay, idx) => (

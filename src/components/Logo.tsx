@@ -10,16 +10,33 @@ export const Logo = ({ size = 48, className = "" }: { size?: number, className?:
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
-      <rect width="100" height="100" rx="25" fill="#1F1F1F" />
-      
-      {/* Book / Diary Pages */}
-      <path d="M28 35C28 30 38 28 50 32C62 28 72 30 72 35V75C72 70 62 70 50 75C38 70 28 70 28 75V35Z" fill="#FAF9F6" />
-      
-      {/* Bookmark */}
-      <path d="M62 30V48L57 44L52 48V31.5C56 30 59 30 62 30Z" fill="#E3E3CC" />
+      {/* Background Soft Glow */}
+      <rect width="100" height="100" rx="35" fill="url(#aestheticGradient)" />
+      <circle cx="50" cy="50" r="40" fill="url(#glowGradient)" opacity="0.6" filter="url(#blur)" />
 
-      {/* Heart */}
-      <path d="M50 58.5C50 58.5 40 48 40 42C40 38.5 43 36 46 36C47.8 36 49 37 50 38.5C51 37 52.2 36 54 36C57 36 60 38.5 60 42C60 48 50 58.5 50 58.5Z" fill="#1F1F1F" />
+      {/* Aesthetic Abstract Heart / Spark */}
+      <path 
+        d="M50 75C50 75 22 55 22 38C22 28.5 29 23 37 23C42 23 47 26 50 31C53 26 58 23 63 23C71 23 78 28.5 78 38C78 55 50 75 50 75Z" 
+        fill="#FFFFFF" 
+        style={{ dropShadow: '0px 10px 20px rgba(0,0,0,0.1)' }}
+      />
+      <circle cx="65" cy="30" r="4" fill="#FFEAA7" opacity="0.8" />
+      <circle cx="28" cy="45" r="2" fill="#FFEAA7" opacity="0.6" />
+
+      {/* Defs for gradients & filters */}
+      <defs>
+        <linearGradient id="aestheticGradient" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#FFC3A0" /> {/* Soft Peach */}
+          <stop offset="1" stopColor="#FFAFBD" /> {/* Soft Pink */}
+        </linearGradient>
+        <radialGradient id="glowGradient" cx="50" cy="50" r="50" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#E0BBE4" /> {/* Soft Lavender */}
+          <stop offset="1" stopColor="transparent" stopOpacity="0" />
+        </radialGradient>
+        <filter id="blur" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="6" />
+        </filter>
+      </defs>
     </svg>
   );
 };
