@@ -234,10 +234,10 @@ async function startVite() {
   }
 }
 
-startVite();
-
-// Only listen if not running in Vercel serverless
+// Only run Vite and Listen if not running in Vercel serverless
 if (!process.env.VERCEL) {
+  startVite();
+  
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
