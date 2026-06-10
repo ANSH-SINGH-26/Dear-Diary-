@@ -110,8 +110,8 @@ export async function talkToAI(message: string, chatHistory: any[] = [], mode: '
   } catch (error: any) {
     console.error("Chat error:", error);
     const msg = error?.message || "";
-    if (msg.includes("Please configure your Gemini") || msg.includes("Please configure your Groq") || msg.includes("API_KEYS_MISSING") || msg.includes("API_KEY_MISSING")) {
-      return "Hello! I need a Gemini API Key or Groq API Key to function. Please open the Settings menu (gear icon or sidebar) in AI Studio, go to Secrets, and add your GEMINI_API_KEY or GROQ_API_KEY. Once added, I will be able to reply!";
+    if (msg.includes("Please configure your Gemini") || msg.includes("Please configure your Groq") || msg.includes("API_KEYS_MISSING") || msg.includes("API_KEY_MISSING") || msg.includes("OpenRouter")) {
+      return "Hello! I need an API Key to function. Please open the Settings menu (gear icon or sidebar) in AI Studio, go to Secrets, and add your GEMINI_API_KEY, GROQ_API_KEY, or OPENROUTER_API_KEY. Once added, I will be able to reply!";
     }
     if (msg.includes("Backend server not found") || msg.includes("Network error") || msg.includes("Failed to fetch")) {
       return "I can't reach the backend server. If you deployed this app, please ensure the backend is running.";
