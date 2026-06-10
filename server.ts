@@ -67,7 +67,7 @@ const callAI = async (
 
     const config: any = {
       messages,
-      model: "llama-3.3-70b-versatile",
+      model: "llama3-8b-8192",
     };
     if (responseFormat === "json_object") {
        config.response_format = { type: "json_object" };
