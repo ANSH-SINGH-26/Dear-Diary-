@@ -10,6 +10,7 @@ import EntryCard from './components/EntryCard';
 import ChatSupport from './components/ChatSupport';
 import ChatTabContent from './components/ChatTabContent';
 import StressTabContent from './components/StressTabContent';
+import { getDailyThought } from './utils/thoughts';
 import { DiaryEntry } from './types';
 import { cn, handleFirestoreError, OperationType, formatDate } from './lib/utils';
 import { auth, signInWithGoogle, db } from './lib/firebase';
@@ -416,7 +417,13 @@ export default function App() {
               <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                 <div>
                   <h2 className="text-sm font-medium text-ink/40 uppercase tracking-[0.2em] mb-2">Welcome Back</h2>
-                  <h1 className="text-4xl font-serif">{getGreeting()}, {user.displayName?.split(' ')[0] || 'Friend'}</h1>
+                  <h1 className="text-4xl font-serif mb-3">{getGreeting()}, {user.displayName?.split(' ')[0] || 'Friend'}</h1>
+                  <div className="flex items-start gap-2 max-w-md">
+                    <Heart className="text-rose-400 mt-1 flex-shrink-0" size={16} />
+                    <p className="text-sm text-ink/70 italic leading-relaxed">
+                      "{getDailyThought()}"
+                    </p>
+                  </div>
                 </div>
                 
                 <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 w-full md:w-auto">
@@ -568,8 +575,8 @@ export default function App() {
               )}
 
               {activeTab === 'chat' && (
-                <div className="bg-white rounded-[2rem] md:rounded-[3rem] shadow-xl border border-beige-100 overflow-hidden h-[70vh] flex flex-col relative">
-                  <div className="p-8 md:p-12 h-full flex flex-col">
+                <div className="bg-white rounded-none sm:rounded-[2rem] md:rounded-[3rem] shadow-none sm:shadow-xl border-t border-beige-100 sm:border sm:border-beige-100 overflow-hidden fixed top-16 bottom-0 left-0 right-0 sm:static sm:h-[70vh] flex flex-col z-30 sm:z-auto">
+                  <div className="p-4 pb-[6.5rem] sm:p-8 md:p-12 h-full flex flex-col">
                     <ChatTabContent />
                   </div>
                 </div>

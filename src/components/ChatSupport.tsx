@@ -76,7 +76,7 @@ export default function ChatSupport({ onClose, initialMessage }: ChatSupportProp
       initial={{ opacity: 0, scale: 0.95, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95, y: 20 }}
-      className="fixed inset-4 sm:inset-auto sm:right-8 sm:bottom-8 sm:w-[400px] h-[600px] max-h-[80vh] bg-white rounded-[2.5rem] shadow-2xl z-[60] flex flex-col overflow-hidden border border-beige-200"
+      className="fixed inset-0 sm:inset-auto sm:right-8 sm:bottom-8 sm:w-[400px] h-[100dvh] sm:h-[600px] sm:max-h-[80vh] bg-white sm:rounded-[2.5rem] shadow-2xl z-[60] flex flex-col overflow-hidden sm:border border-beige-200"
     >
       {/* Header */}
       <div className="p-6 bg-ink text-beige-50 flex flex-col gap-4">

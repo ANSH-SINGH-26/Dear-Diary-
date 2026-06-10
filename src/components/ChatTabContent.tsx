@@ -65,12 +65,28 @@ export default function ChatTabContent() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
-        <div>
-          <h2 className="text-2xl font-serif">{mode === 'psychologist' ? 'Dr. Heart' : 'Dear Heart'}</h2>
-          <p className="text-sm text-ink/40 italic">{mode === 'psychologist' ? '"Your psychological wellness guide."' : '"Your story matters. I\'m here to listen."'}</p>
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-2 sm:mb-8 gap-2 sm:gap-4 shrink-0">
+        <div className="w-full flex justify-between items-center sm:w-auto">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-serif">{mode === 'psychologist' ? 'Dr. Heart' : 'Dear Heart'}</h2>
+            <p className="text-[11px] sm:text-sm text-ink/40 italic">{mode === 'psychologist' ? '"Your psychological wellness guide."' : '"Your story matters. I\'m here to listen."'}</p>
+          </div>
+          <div className="flex sm:hidden bg-beige-100 p-0.5 rounded-lg">
+            <button 
+              onClick={() => setMode('normal')}
+              className={cn("px-2 text-[10px] font-bold uppercase tracking-wider py-1 rounded-md transition-colors", mode === 'normal' ? "bg-white text-ink shadow-sm" : "text-ink/40")}
+            >
+              Friend
+            </button>
+            <button 
+              onClick={() => setMode('psychologist')}
+              className={cn("px-2 text-[10px] font-bold uppercase tracking-wider py-1 rounded-md transition-colors", mode === 'psychologist' ? "bg-white text-ink shadow-sm" : "text-ink/40")}
+            >
+              Doc
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="hidden sm:flex items-center gap-4">
           <div className="flex bg-beige-100 p-1 rounded-xl">
             <button 
               onClick={() => setMode('normal')}
@@ -94,7 +110,7 @@ export default function ChatTabContent() {
 
       <div 
         ref={scrollRef}
-        className="flex-grow overflow-y-auto space-y-8 pr-4 mb-6 custom-scrollbar"
+        className="flex-grow overflow-y-auto space-y-4 sm:space-y-8 pr-2 sm:pr-4 mb-4 sm:mb-6 custom-scrollbar"
       >
         {messages.map((msg, i) => (
           <motion.div

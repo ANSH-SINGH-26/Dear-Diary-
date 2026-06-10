@@ -18,7 +18,7 @@ export const Logo = ({ size = 48, className = "" }: { size?: number, className?:
       <path 
         d="M50 75C50 75 22 55 22 38C22 28.5 29 23 37 23C42 23 47 26 50 31C53 26 58 23 63 23C71 23 78 28.5 78 38C78 55 50 75 50 75Z" 
         fill="#FFFFFF" 
-        style={{ dropShadow: '0px 10px 20px rgba(0,0,0,0.1)' }}
+        style={{ filter: 'drop-shadow(0px 10px 20px rgba(0,0,0,0.1))' }}
       />
       <circle cx="65" cy="30" r="4" fill="#FFEAA7" opacity="0.8" />
       <circle cx="28" cy="45" r="2" fill="#FFEAA7" opacity="0.6" />
