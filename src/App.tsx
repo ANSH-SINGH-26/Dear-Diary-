@@ -136,17 +136,6 @@ export default function App() {
       
       // Update state only if data actually changed (shallow comparison or just update)
       setEntries(data);
-      
-      // Update personalized prompt based on history
-      if (data.length > 0) {
-        setIsPromptLoading(true);
-        generatePersonalizedPrompt(data.slice(0, 5).map(e => ({ content: e.content, mood: e.mood })))
-          .then(res => {
-            if (res) setDailyPrompt(res);
-          })
-          .catch(err => console.error("Prompt generation failed", err))
-          .finally(() => setIsPromptLoading(false));
-      }
     }, (error) => {
       handleFirestoreError(error, OperationType.GET, path);
     });

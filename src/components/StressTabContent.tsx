@@ -13,16 +13,7 @@ export default function StressTabContent({ entries }: StressTabContentProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Generate advice once when the tab mounts
-    const fetchAdvice = async () => {
-      setIsLoading(true);
-      const recentContext = entries.slice(0, 5).map(e => ({ content: e.content, mood: e.mood }));
-      const result = await generateStressReliefAdvice(recentContext);
-      setAdvice(result);
-      setIsLoading(false);
-    };
-
-    fetchAdvice();
+    // Generate advice only when requested by the user
   }, [entries]);
 
   return (
@@ -49,13 +40,28 @@ export default function StressTabContent({ entries }: StressTabContentProps) {
               <Loader2 className="animate-spin mb-3" size={24} />
               <p className="text-sm italic font-serif">Analyzing your emotional balance...</p>
             </div>
-          ) : (
+          ) : advice ? (
             <p className="font-serif italic text-lg leading-relaxed text-ink/80">
               "{advice}"
             </p>
+          ) : (
+            <div className="py-8 flex flex-col items-center justify-center">
+               <button 
+                onClick={async () => {
+                  setIsLoading(true);
+                  const recentContext = entries.slice(0, 5).map(e => ({ content: e.content, mood: e.mood }));
+                  const result = await generateStressReliefAdvice(recentContext);
+                  setAdvice(result);
+                  setIsLoading(false);
+                }}
+                className="px-6 py-3 bg-amber-500 text-white rounded-full text-sm font-medium hover:bg-amber-600 transition-colors"
+               >
+                 Generate Personalized Insights
+               </button>
+            </div>
           )}
 
-          {!isLoading && (
+          {!isLoading && advice && (
             <div className="mt-8 pt-6 border-t border-beige-200/50 flex justify-between items-center">
               <span className="text-[10px] uppercase font-bold text-ink/30 tracking-widest">A moment for you</span>
               <button 
