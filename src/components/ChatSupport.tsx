@@ -51,7 +51,7 @@ export default function ChatSupport({ onClose, initialMessage }: ChatSupportProp
     try {
       // Create a clean history for Gemini:
       const history = messages
-        .filter(m => m.text.trim())
+        .filter(m => m.text?.trim())
         .slice(-10)
         .map(m => ({
           role: m.role,
@@ -197,7 +197,7 @@ export default function ChatSupport({ onClose, initialMessage }: ChatSupportProp
           />
           <button
             type="submit"
-            disabled={isLoading || !input.trim()}
+            disabled={isLoading || !input?.trim()}
             className="shrink-0 w-10 h-10 bg-ink text-beige-50 rounded-full hover:bg-ink/90 disabled:opacity-50 transition-all flex items-center justify-center shadow-md"
           >
             <Send size={16} />

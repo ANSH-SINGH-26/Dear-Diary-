@@ -43,7 +43,7 @@ export default function ChatTabContent() {
 
     try {
       const history = messages
-        .filter(m => m.text.trim())
+        .filter(m => m.text?.trim())
         .slice(-12)
         .map(m => ({
           role: m.role,
@@ -192,7 +192,7 @@ export default function ChatTabContent() {
           />
           <button
             type="submit"
-            disabled={isLoading || !input.trim()}
+            disabled={isLoading || !input?.trim()}
             className="shrink-0 w-12 h-12 bg-ink text-beige-50 rounded-full hover:bg-ink/90 disabled:opacity-50 transition-all flex items-center justify-center shadow-lg"
           >
             <Send size={18} />

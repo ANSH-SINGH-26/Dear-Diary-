@@ -15,9 +15,9 @@ interface WritingInterfaceProps {
 }
 
 export default function WritingInterface({ onSave, isSaving, aiResponse, onClose, initialContent = '', initialTitle = '', initialImage = null }: WritingInterfaceProps) {
-  const [content, setContent] = useState(initialContent);
-  const [title, setTitle] = useState(initialTitle);
-  const [image, setImage] = useState<string | null>(initialImage);
+  const [content, setContent] = useState(initialContent || '');
+  const [title, setTitle] = useState(initialTitle || '');
+  const [image, setImage] = useState<string | null>(initialImage || null);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -35,8 +35,8 @@ export default function WritingInterface({ onSave, isSaving, aiResponse, onClose
   };
 
   const handleSave = () => {
-    if (content.trim()) {
-      onSave(content, title.trim() || undefined, image || undefined);
+    if (content?.trim()) {
+      onSave(content, title?.trim() || undefined, image || undefined);
     }
   };
 
@@ -102,10 +102,10 @@ export default function WritingInterface({ onSave, isSaving, aiResponse, onClose
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={handleSave}
-            disabled={isSaving || !content.trim()}
+            disabled={isSaving || !content?.trim()}
             className={cn(
               "flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-ink text-beige-50 font-medium transition-all shadow-lg w-full sm:w-auto",
-              (isSaving || !content.trim()) && "opacity-50 cursor-not-allowed"
+              (isSaving || !content?.trim()) && "opacity-50 cursor-not-allowed"
             )}
           >
             {isSaving ? (

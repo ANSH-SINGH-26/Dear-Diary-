@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, ArrowRight, Loader2, Heart, Search, MessageCircle, X, LogOut } from 'lucide-react';
+import { Sparkles, ArrowRight, Loader2, Heart, Search, MessageCircle, X, LogOut, Trash2 } from 'lucide-react';
 import { Logo } from './components/Logo';
 import Sidebar from './components/Sidebar';
 import Timeline from './components/Timeline';
@@ -84,6 +84,7 @@ export default function App() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatContext, setChatContext] = useState<string | undefined>();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [entryToDelete, setEntryToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -176,16 +177,20 @@ export default function App() {
     }
   };
 
-  const handleDeleteEntry = async (entryId: string) => {
-    if (!user) return;
-    if (!confirm("Are you sure you want to delete this entry? This action cannot be undone.")) return;
+  const handleDeleteEntry = (entryId: string) => {
+    setEntryToDelete(entryId);
+  };
+
+  const confirmDeleteEntry = async () => {
+    if (!user || !entryToDelete) return;
     
     try {
-      const path = `users/${user.uid}/entries/${entryId}`;
-      await deleteDoc(doc(db, 'users', user.uid, 'entries', entryId));
+      const path = `users/${user.uid}/entries/${entryToDelete}`;
+      await deleteDoc(doc(db, 'users', user.uid, 'entries', entryToDelete));
       setSelectedEntry(null);
+      setEntryToDelete(null);
     } catch (error) {
-      handleFirestoreError(error, OperationType.DELETE, `users/${user.uid}/entries/${entryId}`);
+      handleFirestoreError(error, OperationType.DELETE, `users/${user.uid}/entries/${entryToDelete}`);
     }
   };
 
@@ -220,10 +225,24 @@ export default function App() {
 
     try {
       // 1. Analyze with AI
-      const analysis = await analyzeEntry(
-        content, 
-        entries.slice(0, 3).map(e => ({ content: e.content, mood: e.mood }))
-      );
+      let analysis: any = {
+        sentiment: 'neutral',
+        intensity: 5,
+        suggestedTag: null,
+        response: null,
+        moodColor: '#F5F5DC',
+        distressLevel: 'low'
+      };
+      
+      try {
+        analysis = await analyzeEntry(
+          content, 
+          entries.slice(0, 3).map(e => ({ content: e.content, mood: e.mood }))
+        );
+      } catch (aiError) {
+        console.warn("AI analysis failed, proceeding with default analysis", aiError);
+      }
+      
       
       const entryData = {
         userId: user.uid,
@@ -245,7 +264,6 @@ export default function App() {
         const entryRef = doc(db, 'users', user.uid, 'entries', editingEntry.id);
         await setDoc(entryRef, entryData, { merge: true });
         setEditingEntry(null);
-        setIsWriting(false);
       } else {
         // Save new to Firestore
         const path = `users/${user.uid}/entries`;
@@ -277,6 +295,7 @@ export default function App() {
       }
 
       setAiResponse(analysis.response);
+      setIsWriting(false);
     } catch (error) {
       console.error("Save error:", error);
       handleFirestoreError(error, OperationType.WRITE, `users/${user.uid}/entries`);
@@ -382,7 +401,7 @@ export default function App() {
         <AnimatePresence mode="wait">
           {isWriting || editingEntry ? (
             <WritingInterface 
-              key="writer"
+              key={editingEntry ? `edit-${editingEntry.id}` : "writer"}
               onSave={handleSaveEntry} 
               isSaving={isSaving} 
               aiResponse={aiResponse}
@@ -502,6 +521,7 @@ export default function App() {
                               setIsPromptLoading(true);
                               generatePersonalizedPrompt(entries.slice(0, 5).map(e => ({ content: e.content, mood: e.mood })))
                                 .then(setDailyPrompt)
+                                .catch(() => setDailyPrompt("What brought you a moment of peace today?"))
                                 .finally(() => setIsPromptLoading(false));
                             }}
                             className="p-1 hover:bg-beige-300 rounded-lg transition-colors text-ink/40 hover:text-ink/60"
@@ -722,6 +742,49 @@ export default function App() {
         )}
       </AnimatePresence>
 
+      {/* Delete Entry Confirmation Modal */}
+      <AnimatePresence>
+        {entryToDelete && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setEntryToDelete(null)}
+              className="absolute inset-0 bg-ink/40 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl p-8 text-center"
+            >
+              <div className="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Trash2 size={32} />
+              </div>
+              <h3 className="text-xl font-serif mb-2">Delete Entry?</h3>
+              <p className="text-ink/60 text-sm mb-8">
+                Are you sure you want to delete this entry? This action cannot be undone.
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => setEntryToDelete(null)}
+                  className="py-3 px-6 bg-beige-100 text-ink rounded-xl font-medium hover:bg-beige-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDeleteEntry}
+                  className="py-3 px-6 bg-red-500 text-white rounded-xl font-medium hover:bg-red-600 transition-colors shadow-lg shadow-red-100"
+                >
+                  Delete
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {selectedEntry && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-12">
@@ -781,7 +844,7 @@ export default function App() {
 
                       <button 
                         onClick={() => selectedEntry && handleDeleteEntry(selectedEntry.id)}
-                        className="w-full py-4 px-6 border border-red-100 text-red-500 rounded-2xl md:rounded-3xl text-sm font-medium hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+                        className="w-full py-4 px-6 bg-red-50 text-red-600 rounded-2xl md:rounded-3xl text-sm font-bold hover:bg-red-100 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-sm"
                       >
                         Delete
                       </button>

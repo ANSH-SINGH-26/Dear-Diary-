@@ -48,13 +48,20 @@ export default function StressTabContent({ entries }: StressTabContentProps) {
             <div className="py-8 flex flex-col items-center justify-center">
                <button 
                 onClick={async () => {
+                  if (isLoading) return;
                   setIsLoading(true);
-                  const recentContext = entries.slice(0, 5).map(e => ({ content: e.content, mood: e.mood }));
-                  const result = await generateStressReliefAdvice(recentContext);
-                  setAdvice(result);
-                  setIsLoading(false);
+                  try {
+                    const recentContext = entries.slice(0, 5).map(e => ({ content: e.content, mood: e.mood }));
+                    const result = await generateStressReliefAdvice(recentContext);
+                    setAdvice(result);
+                  } catch (error) {
+                    setAdvice("I'm currently unable to generate insights, but please remember to take deep breaths and be kind to yourself. You are doing the best you can.");
+                  } finally {
+                    setIsLoading(false);
+                  }
                 }}
-                className="px-6 py-3 bg-amber-500 text-white rounded-full text-sm font-medium hover:bg-amber-600 transition-colors"
+                disabled={isLoading}
+                className="px-6 py-3 bg-amber-500 text-white rounded-full text-sm font-medium hover:bg-amber-600 transition-colors disabled:opacity-50"
                >
                  Generate Personalized Insights
                </button>

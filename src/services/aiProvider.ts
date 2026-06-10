@@ -16,7 +16,7 @@ export async function analyzeEntry(entryText: string, history: any[] = []): Prom
     const data = await response.json();
     if (data.error) throw new Error(data.error);
 
-    const text = data.text.trim();
+    const text = data.text?.trim() || "{}";
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     const cleanJson = jsonMatch ? jsonMatch[0] : text;
 
