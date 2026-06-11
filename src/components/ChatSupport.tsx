@@ -193,7 +193,7 @@ export default function ChatSupport({ onClose, initialMessage }: ChatSupportProp
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type your message..."
             className="flex-grow pl-5 py-2.5 bg-transparent border-none text-sm focus:ring-0 placeholder:text-ink/20 min-w-0"
-            disabled={isLoading}
+            autoFocus
           />
           <button
             type="submit"

@@ -188,7 +188,7 @@ export default function ChatTabContent() {
             onChange={(e) => setInput(e.target.value)}
             placeholder="Share what's on your heart..."
             className="flex-grow pl-5 py-3 bg-transparent border-none text-base focus:ring-0 placeholder:text-ink/20 font-serif italic min-w-0"
-            disabled={isLoading}
+            autoFocus
           />
           <button
             type="submit"
