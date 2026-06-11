@@ -89,7 +89,7 @@ const callAI = async (
 
     const config: any = {
       messages,
-      model: "llama-3.3-70b-versatile",
+      model: "llama-3.1-8b-instant",
     };
     if (responseFormat === "json_object") {
        config.response_format = { type: "json_object" };
@@ -165,7 +165,8 @@ const callAI = async (
     }
   }
 
-  throw lastError || new Error("Unable to fulfill request.");
+  console.error("All AI providers exhausted. Last error:", lastError?.message || lastError);
+  throw new Error("All AI providers (Gemini, Groq, OpenRouter) are currently busy or rate-limited. Please try again in a few moments. " + (lastError?.message ? `(Details: ${lastError.message})` : ""));
 };
 
 app.get("/api/gemini/debug", (req, res) => {
